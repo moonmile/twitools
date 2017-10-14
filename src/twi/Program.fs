@@ -26,19 +26,19 @@ let AccessTokenSecret = ""
 let getfollowers (name:string) =
     let tokens = CoreTweet.Tokens.Create(ApiKey, ApiSecret, AccessToken, AccessTokenSecret)
     let mutable count = 1
-    let mutable cursor = 0L
+    let mutable cursor:Nullable<int64> = System.Nullable()
     let mutable loop = true
 
     while loop do
-        let ids = tokens.Followers.IdsAsync(name) |> Async.AwaitTask |> Async.RunSynchronously
+        let ids = tokens.Followers.IdsAsync(name, cursor) |> Async.AwaitTask |> Async.RunSynchronously
         for id in ids do
             Console.WriteLine( String.Format("{0}\t{1}", count, id ))
             count <- count + 1
-        // Console.WriteLine("cursor is " + ids.NextCursor.ToString())
+        Console.WriteLine("cursor is " + ids.NextCursor.ToString())
         if ids.NextCursor = 0L then
             loop <- false
         else
-            cursor <- ids.NextCursor
+            cursor <- new Nullable<int64>( ids.NextCursor )
             // 70秒待つ
             Task.Delay(1000*70) |> Async.AwaitTask |> Async.RunSynchronously
 
