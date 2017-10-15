@@ -22,6 +22,7 @@ let ApiSecret = ""
 let AccessToken = ""
 let AccessTokenSecret = ""
 
+
 // フォロワー数を取得
 let getfollowers (name:string) =
     let tokens = CoreTweet.Tokens.Create(ApiKey, ApiSecret, AccessToken, AccessTokenSecret)
@@ -34,7 +35,7 @@ let getfollowers (name:string) =
         for id in ids do
             Console.WriteLine( String.Format("{0}\t{1}", count, id ))
             count <- count + 1
-        Console.WriteLine("cursor is " + ids.NextCursor.ToString())
+        // Console.WriteLine("cursor is " + ids.NextCursor.ToString())
         if ids.NextCursor = 0L then
             loop <- false
         else
@@ -62,16 +63,36 @@ let id2name (fname:string) =
         Task.Delay(500) |> Async.AwaitTask |> Async.RunSynchronously
         count <- count + 1
 
+// id からユーザー情報を取得
+let id2user ( fname:string ) =
+
+    let lines = System.IO.File.ReadAllLines( fname )
+    let tokens = CoreTweet.Tokens.Create(ApiKey, ApiSecret, AccessToken, AccessTokenSecret)
+    let mutable count = 1
+    for line in lines do
+        let s = line.Split('\t')
+        let id = int64(s.[1])
+        let user = tokens.Users.ShowAsync(id) |> Async.AwaitTask |> Async.RunSynchronously
+        Console.WriteLine(
+            String.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}", 
+                count, 
+                user.Id, user.ScreenName, user.Name, 
+                user.StatusesCount,
+                user.FriendsCount, user.FollowersCount, 
+                user.CreatedAt, user.IsProtected ))
+        Task.Delay(500) |> Async.AwaitTask |> Async.RunSynchronously
+        count <- count + 1
+    
 
 [<EntryPoint>]
 let main argv =
     if argv.Length = 0 then
         Console.WriteLine("twi follower <screenname>")
-        Console.WriteLine("twi id2name <ids file>")
+        Console.WriteLine("twi id2user <ids file>")
     else
         match argv.[0] with
         | "follower" -> getfollowers argv.[1]
-        | "id2name"  -> id2name argv.[1]
+        | "id2user"  -> id2user argv.[1]
         | _ -> 
             Console.WriteLine("twi floller <screenname>")
             Console.WriteLine("twi id2name <ids file>")
