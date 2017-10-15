@@ -80,7 +80,7 @@ let id2user ( fname:string ) =
                 user.StatusesCount,
                 user.FriendsCount, user.FollowersCount, 
                 user.CreatedAt, user.IsProtected ))
-        Task.Delay(500) |> Async.AwaitTask |> Async.RunSynchronously
+        Task.Delay(1000) |> Async.AwaitTask |> Async.RunSynchronously
         count <- count + 1
     
 
