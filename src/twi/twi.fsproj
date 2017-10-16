@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="CoreTweet" Version="0.8.1.394" />
     <PackageReference Include="HtmlAgilityPack" Version="1.6.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
 
   <ItemGroup>

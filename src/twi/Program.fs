@@ -16,12 +16,32 @@ type HttpClient with
         }
         Async.RunSynchronously( res )
 
-// https://apps.twitter.com/ より取得
-let ApiKey = ""
-let ApiSecret = ""
-let AccessToken = ""
-let AccessTokenSecret = ""
+type AppSet = {
+    ApiKey: string
+    ApiSecret: string
+    AccessToken: string
+    AccessTokenSecret: string
+    }
 
+let js = Newtonsoft.Json.JsonSerializer();
+let fr = new System.IO.StreamReader(@"app.json")
+
+let appSet = js.Deserialize(fr, typeof<AppSet>) :?> AppSet
+
+// https://apps.twitter.com/ より取得して app.json に保存する
+(*
+{
+   "ApiKey":"",
+   "ApiSecret":"",
+   "AccessToken":"",
+   "AccessTokenSecret":"" 
+}
+
+*)
+let ApiKey = appSet.ApiKey
+let ApiSecret = appSet.ApiSecret
+let AccessToken = appSet.AccessToken
+let AccessTokenSecret = appSet.AccessTokenSecret
 
 // フォロワー数を取得
 let getfollowers (name:string) =
